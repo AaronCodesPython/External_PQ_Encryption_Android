@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:fitsSystemWindows="true"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#D2D2D2"
+    tools:context=".IO_Activity">
+
+    <com.google.android.material.button.MaterialButtonToggleGroup
+        android:id="@+id/mainToggle"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="24dp"
+        android:layout_width="wrap_content"
+        app:singleSelection="true"
+        android:layout_weight="0.05"
+        app:checkedButton="@+id/encrypt_button"
+        android:layout_height="0dp">
+        <com.google.android.material.button.MaterialButton
+            style="?attr/materialButtonOutlinedStyle"
+            android:layout_width="wrap_content"
+            android:id="@+id/encrypt_button"
+            android:layout_height="wrap_content"
+            app:cornerRadius="16dp"
+            android:backgroundTint="@color/button_toggle_background"
+            android:layout_margin="0px"
+            android:textColor="@color/black"
+            app:strokeColor="@color/button_toggle_text"
+
+            android:text="Encrypt"/>
+        <com.google.android.material.button.MaterialButton
+            style="?attr/materialButtonOutlinedStyle"
+            android:layout_width="wrap_content"
+            android:id="@+id/decrypt_button"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/button_toggle_background"
+            app:cornerRadius="16dp"
+            android:layout_margin="0px"
+            android:textColor="@color/black"
+            app:strokeColor="@color/button_toggle_text"
+            android:text="Decrypt"/>
+    </com.google.android.material.button.MaterialButtonToggleGroup>
+    <Spinner
+        android:id="@+id/contact_spinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <EditText
+        android:id="@+id/editTextTextMultiLine"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_margin="8dp"
+        android:layout_weight="0.3"
+        android:background="@drawable/eddittext_bg"
+
+        android:ems="10"
+        android:gravity="start|top"
+        android:hint="enter your text here..."
+        android:inputType="textMultiLine"
+        android:isScrollContainer="true"
+        android:paddingLeft="12dp"
+        android:paddingTop="6dp"
+        android:paddingRight="6dp"
+        android:paddingBottom="4dp" />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@color/superDarkBG"/>
+
+    <EditText
+        android:id="@+id/output_textfield"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+
+        android:layout_margin="8dp"
+        android:layout_weight="0.3"
+        android:background="@drawable/eddittext_bg"
+        android:clickable="false"
+        android:ems="10"
+        android:gravity="start|top"
+        android:inputType="textMultiLine"
+        android:isScrollContainer="false"
+        android:paddingLeft="12dp"
+        android:paddingTop="6dp"
+        android:paddingRight="6dp"
+        android:paddingBottom="4dp" />
+</LinearLayout>

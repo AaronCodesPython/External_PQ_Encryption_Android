@@ -55,15 +55,15 @@ public class contact_screen extends AppCompatActivity {
                 String line;
                 while ((line = reader.readLine()) != null) {
                     if (line.contains(";")) {
-                        String[] parts = line.split(";", 2); // limit = 2 ensures name can have semicolon
-                        contacts.add(new Contact(parts[0].trim(), parts[1].trim()));
+                        String[] parts = line.split(";", 3);
+                        contacts.add(new Contact(parts[0].trim(), parts[1].trim(), Integer.parseInt(parts[2].trim())));
                     }
                 }
             } catch (IOException e) {}
         }
         else{
             try (FileOutputStream fos = t.openFileOutput("contacts.txt", MODE_PRIVATE)) {
-                fos.write("Alice;000000000000000000\nBob;000000000000000000".getBytes());
+                fos.write("Alice;123000000000000000;0\nBob;000000000000000000;1".getBytes());
             } catch (IOException e) {}
             return readContacts(t);
 

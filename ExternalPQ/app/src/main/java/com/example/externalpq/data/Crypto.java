@@ -31,8 +31,14 @@ public class Crypto {
         return data;
     }
 
-    public static byte[] get_shared_secret(){
-        String key = "f3c2b8a7e02e19d04bd44137e9a6d67c8df7b1c32d8b0b0b1cd2ab6f5f0d9a44";
+    public static byte[] get_shared_secret(Contact currentContact){
+        String key;
+        if(currentContact.id == 0){
+            key= "f3c2b8a7e02e19d04bd44137e9a6d67c8df7b1c32d8b0b0b1cd2ab6f5f0d9a44";
+        }
+        else{
+            key= "f3c2b8a7e02e72014bd44137e9a6d67c8df7b1c32d8b0b0b1cd2ab6f5f0d9a44";
+        }
         byte[] keyBytes = hexToBytes(key);
         return keyBytes;
     }

@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
@@ -30,7 +31,7 @@ import java.util.List;
 public class IO_Activity extends AppCompatActivity {
     private ActivityIoBinding binding;
     List<Contact> contacts;
-
+    Contact currentContact;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +40,7 @@ public class IO_Activity extends AppCompatActivity {
         setContentView(binding.getRoot());
         binding.outputTextfield.setFocusable(false);
         contacts = contact_screen.readContacts(this);
+        currentContact = (Contact) binding.contactSpinner.getSelectedItem();
         ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
 
 
@@ -57,12 +59,11 @@ public class IO_Activity extends AppCompatActivity {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 //Log.d("encryption_info",Crypto.encrypt(s.toString(), (Contact) binding.contactSpinner.getSelectedItem()));
                 try{
-                    Log.i("textinfo", binding.inputField.getText().toString());
                     if(binding.mainToggle.getCheckedButtonId() == binding.encryptButton.getId()){
-                        binding.outputTextfield.setText(Crypto.AESUtil.encrypt(binding.inputField.getText().toString(), Crypto.get_shared_secret()));
+                        binding.outputTextfield.setText(Crypto.AESUtil.encrypt(binding.inputField.getText().toString(), Crypto.get_shared_secret(currentContact)));
 
                     }else if(binding.mainToggle.getCheckedButtonId() == binding.decryptButton.getId()){
-                        binding.outputTextfield.setText(Crypto.AESUtil.decrypt(binding.inputField.getText().toString(), Crypto.get_shared_secret()));
+                        binding.outputTextfield.setText(Crypto.AESUtil.decrypt(binding.inputField.getText().toString(), Crypto.get_shared_secret(currentContact)));
 
                     }
                     else{
@@ -80,6 +81,21 @@ public class IO_Activity extends AppCompatActivity {
             public void afterTextChanged(Editable s) {
             }
         });
+
+        binding.contactSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+             @Override
+             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                 //String selectedItem = parent.getItemAtPosition(position).toString();
+                 currentContact = (Contact) parent.getItemAtPosition(position);
+             }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+
         binding.switchButton.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View v) {
 

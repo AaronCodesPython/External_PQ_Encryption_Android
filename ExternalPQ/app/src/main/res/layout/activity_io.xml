@@ -8,60 +8,81 @@
     android:orientation="vertical"
     android:background="#D2D2D2"
     tools:context=".IO_Activity">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.1"
+        android:orientation="horizontal"
+        android:gravity="center_horizontal"> <!-- Center all children horizontally -->
 
-    <com.google.android.material.button.MaterialButtonToggleGroup
-        android:id="@+id/mainToggle"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="24dp"
-        android:layout_width="wrap_content"
-        app:singleSelection="true"
-        android:layout_weight="0.05"
-        app:checkedButton="@+id/encrypt_button"
-        android:layout_height="0dp">
-        <com.google.android.material.button.MaterialButton
-            style="?attr/materialButtonOutlinedStyle"
+        <com.google.android.material.button.MaterialButtonToggleGroup
+            android:id="@+id/mainToggle"
             android:layout_width="wrap_content"
-            android:id="@+id/encrypt_button"
             android:layout_height="wrap_content"
-            app:cornerRadius="16dp"
-            android:backgroundTint="@color/button_toggle_background"
-            android:layout_margin="0px"
-            android:textColor="@color/black"
-            app:strokeColor="@color/button_toggle_text"
+            android:layout_marginTop="24dp"
+            app:singleSelection="true"
+            app:checkedButton="@+id/encrypt_button">
 
-            android:text="Encrypt"/>
+            <com.google.android.material.button.MaterialButton
+                style="?attr/materialButtonOutlinedStyle"
+                android:id="@+id/encrypt_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="0px"
+                android:text="Encrypt"
+                android:textColor="@color/black"
+                android:backgroundTint="@color/button_toggle_background"
+                app:cornerRadius="16dp"
+                app:strokeColor="@color/button_toggle_text" />
+
+            <com.google.android.material.button.MaterialButton
+                style="?attr/materialButtonOutlinedStyle"
+                android:id="@+id/decrypt_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="0px"
+                android:text="Decrypt"
+                android:textColor="@color/black"
+                android:backgroundTint="@color/button_toggle_background"
+                app:cornerRadius="16dp"
+                app:strokeColor="@color/button_toggle_text" />
+        </com.google.android.material.button.MaterialButtonToggleGroup>
+
         <com.google.android.material.button.MaterialButton
-            style="?attr/materialButtonOutlinedStyle"
+            android:id="@+id/switchButton"
             android:layout_width="wrap_content"
-            android:id="@+id/decrypt_button"
             android:layout_height="wrap_content"
-            android:backgroundTint="@color/button_toggle_background"
-            app:cornerRadius="16dp"
-            android:layout_margin="0px"
-            android:textColor="@color/black"
-            app:strokeColor="@color/button_toggle_text"
-            android:text="Decrypt"/>
-    </com.google.android.material.button.MaterialButtonToggleGroup>
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="24dp"
+            android:backgroundTint="#B2B2B2"
+            android:text=""
+            android:contentDescription="Sync icon button"
+            app:icon="@drawable/sync_alt_40dp_000000_fill1_wght400_grad0_opsz40"
+            app:iconTint="@android:color/black"
+            app:iconGravity="textStart"
+            app:cornerRadius="16dp" />
+    </LinearLayout>
+
     <Spinner
         android:id="@+id/contact_spinner"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_weight="0.09"
+        android:layout_height="0dp" />
     <EditText
         android:id="@+id/inputField"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_margin="8dp"
-        android:layout_weight="0.3"
+        android:layout_weight="0.38"
         android:background="@drawable/eddittext_bg"
-
-        android:ems="10"
+        android:textIsSelectable="true"
         android:gravity="start|top"
         android:hint="enter your text here..."
         android:inputType="textMultiLine"
         android:isScrollContainer="true"
-        android:paddingLeft="12dp"
+        android:paddingStart="12dp"
         android:paddingTop="6dp"
-        android:paddingRight="6dp"
+        android:paddingEnd="6dp"
         android:paddingBottom="4dp" />
     <View
         android:layout_width="match_parent"
@@ -72,9 +93,9 @@
         android:id="@+id/output_textfield"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-
+        android:textIsSelectable="true"
         android:layout_margin="8dp"
-        android:layout_weight="0.3"
+        android:layout_weight="0.38"
         android:background="@drawable/eddittext_bg"
         android:clickable="false"
         android:ems="10"
@@ -85,4 +106,13 @@
         android:paddingTop="6dp"
         android:paddingRight="6dp"
         android:paddingBottom="4dp" />
+
+    <ImageButton
+        android:id="@+id/copyButton"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.08"
+        app:srcCompat="@drawable/content_copy_40dp_000000_fill1_wght400_grad0_opsz40" />
+
+
 </LinearLayout>

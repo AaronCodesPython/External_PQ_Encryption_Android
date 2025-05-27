@@ -1,9 +1,14 @@
 package com.example.externalpq;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.os.Bundle;
 import android.text.Editable;
 import android.util.Log;
+import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -34,6 +39,7 @@ public class IO_Activity extends AppCompatActivity {
         setContentView(binding.getRoot());
         binding.outputTextfield.setFocusable(false);
         contacts = contact_screen.readContacts(this);
+        ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
 
 
         ArrayAdapter<Contact> adapter = new ArrayAdapter<>(this,
@@ -49,13 +55,58 @@ public class IO_Activity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                Log.d("encryption_info",Crypto.encrypt(s.toString(), (Contact) binding.contactSpinner.getSelectedItem()));
+                //Log.d("encryption_info",Crypto.encrypt(s.toString(), (Contact) binding.contactSpinner.getSelectedItem()));
+                try{
+                    Log.i("textinfo", binding.inputField.getText().toString());
+                    if(binding.mainToggle.getCheckedButtonId() == binding.encryptButton.getId()){
+                        binding.outputTextfield.setText(Crypto.AESUtil.encrypt(binding.inputField.getText().toString(), Crypto.get_shared_secret()));
+
+                    }else if(binding.mainToggle.getCheckedButtonId() == binding.decryptButton.getId()){
+                        binding.outputTextfield.setText(Crypto.AESUtil.decrypt(binding.inputField.getText().toString(), Crypto.get_shared_secret()));
+
+                    }
+                    else{
+
+                    }
+                    //Toast.makeText(IO_Activity.this, , Toast.LENGTH_SHORT).show();
+                }
+                catch (Exception e){
+                    Log.d("encryption_info", "error catched 2:"+e.toString());
+                    e.printStackTrace();
+                }
             }
 
             @Override
             public void afterTextChanged(Editable s) {
             }
         });
+        binding.switchButton.setOnClickListener(new View.OnClickListener() {
+            @Override public void onClick(View v) {
+
+                  int currSelection = binding.mainToggle.getCheckedButtonId();
+                  binding.inputField.setText("");
+                  binding.outputTextfield.setText("");
+
+                if(currSelection == binding.encryptButton.getId()) {
+                    binding.mainToggle.check(binding.decryptButton.getId());
+                }
+                else if(currSelection == binding.decryptButton.getId()){
+                    binding.mainToggle.check(binding.encryptButton.getId());
+                }
+
+            }
+
+        });
+
+
+        binding.copyButton.setOnClickListener(new View.OnClickListener() {
+            @Override public void onClick(View v) {
+                ClipData clip = ClipData.newPlainText("Copied Text", binding.outputTextfield.getText().toString());
+                clipboard.setPrimaryClip(clip);
+            }
+
+        });
+
 
 
        /* ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {

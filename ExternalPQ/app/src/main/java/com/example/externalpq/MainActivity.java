@@ -81,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
         }
         else{
             try (FileOutputStream fos = openFileOutput("pub_keyData.txt", MODE_PRIVATE)) {
-                fos.write(Crypto.generate_pubKey().getBytes());
+                fos.write(Crypto.generate_pubKey());
             } catch (IOException e) {}
             return readPubKey();
         }

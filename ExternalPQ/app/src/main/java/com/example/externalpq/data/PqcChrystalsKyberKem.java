@@ -26,112 +26,43 @@ import javax.crypto.KeyGenerator;
 public class PqcChrystalsKyberKem {
 
     public static void main(String[] args) {
-
         if (Security.getProvider("BCPQC") == null) {
             Security.addProvider(new BouncyCastlePQCProvider());
         }
-        String print = run(false);
-        System.out.println(print);
     }
 
-    public static String run(boolean truncateKeyOutput) {
-        String out = "PQC Chrystals-Kyber KEM";
         out += "\n" + "\n************************************\n" +
-                "* # # SERIOUS SECURITY WARNING # # *\n" +
-                "* This program is a CONCEPT STUDY  *\n" +
-                "* for the algorithm                *\n" +
-                "* Chrystals-Kyber [key exchange    *\n" +
-                "* mechanism]                       *\n" +
-                "* The program is using an          *\n" +
-                "* parameter set that I cannot      *\n" +
-                "* check for the correctness of the *\n" +
-                "* output and other details         *\n" +
-                "*                                  *\n" +
-                "*    DO NOT USE THE PROGRAM IN     *\n" +
-                "*    ANY PRODUCTION ENVIRONMENT    *\n" +
-                "************************************";
 
-        // as there are 3 parameter sets available the program runs all of them
-        KyberParameterSpec[] kyberParameterSpecs = {
-                KyberParameterSpec.kyber512,
-                KyberParameterSpec.kyber768,
-                KyberParameterSpec.kyber1024
-        };
-
-        // statistics
-        int nrOfSpecs = kyberParameterSpecs.length;
-        String[] parameterSpecName = new String[nrOfSpecs];
-        int[] privateKeyLength = new int[nrOfSpecs];
-        int[] publicKeyLength = new int[nrOfSpecs];
-        int[] encryptionKeyLength = new int[nrOfSpecs];
-        int[] encapsulatedKeyLength = new int[nrOfSpecs];
-        boolean[] encryptionKeysEquals = new boolean[nrOfSpecs];
-
-        out += "\n\n****************************************\n";
-        for (int i = 0; i < nrOfSpecs; i++) {
-            // generation of the Chrystals-Kyber key pair
-            KyberParameterSpec kyberParameterSpec = kyberParameterSpecs[i];
-            String kyberParameterSpecName = kyberParameterSpec.getName();
-            parameterSpecName[i] = kyberParameterSpecName;
-            out += "\n" + "Chrystals-Kyber KEM with parameterset " + kyberParameterSpecName;
-            KeyPair keyPair = generateChrystalsKyberKeyPair(kyberParameterSpec);
-
-            // get private and public key
-            PrivateKey privateKey = keyPair.getPrivate();
-            PublicKey publicKey = keyPair.getPublic();
-
-            // storing the key as byte array
-            byte[] privateKeyByte = privateKey.getEncoded();
-            byte[] publicKeyByte = publicKey.getEncoded();
-            out += "\n" + "\ngenerated private key length: " + privateKeyByte.length;
-            out += "\n" + "generated public key length:  " + publicKeyByte.length;
-            privateKeyLength[i] = privateKeyByte.length;
-            publicKeyLength[i] = publicKeyByte.length;
-
-            // generate the keys from a byte array
-            PrivateKey privateKeyLoad = getChrystalsKyberPrivateKeyFromEncoded(privateKeyByte);
-            PublicKey publicKeyLoad = getChrystalsKyberPublicKeyFromEncoded(publicKeyByte);
-
-            // generate the encryption key and the encapsulated key
-            out += "\n" + "\nEncryption side: generate the encryption key and the encapsulated key";
-            SecretKeyWithEncapsulation secretKeyWithEncapsulationSender = pqcGenerateChrystalsKyberEncryptionKey(publicKeyLoad);
-            byte[] encryptionKey = secretKeyWithEncapsulationSender.getEncoded();
-            out += "\n" + "encryption key length: " + encryptionKey.length
-                    + " key: " + bytesToHex(secretKeyWithEncapsulationSender.getEncoded());
-            byte[] encapsulatedKey = secretKeyWithEncapsulationSender.getEncapsulation();
-            out += "\n" + "encapsulated key length: " + encapsulatedKey.length + " key: " + (truncateKeyOutput ?shortenString(bytesToHex(encapsulatedKey)):bytesToHex(encapsulatedKey));
-
-            encryptionKeyLength[i] = encryptionKey.length;
-            encapsulatedKeyLength[i] = encapsulatedKey.length;
-
-            out += "\n" + "\nDecryption side: receive the encapsulated key and generate the decryption key";
-            byte[] decryptionKey = pqcGenerateChrystalsKyberDecryptionKey(privateKeyLoad, encapsulatedKey);
-            out += "\n" + "decryption key length: " + decryptionKey.length + " key: " + bytesToHex(decryptionKey);
-            boolean keysAreEqual = Arrays.areEqual(encryptionKey, decryptionKey);
-            out += "\n" + "decryption key is equal to encryption key: " + keysAreEqual;
-            encryptionKeysEquals[i] = keysAreEqual;
-            out += "\n\n****************************************\n";
-        }
-
-        out += "\n" + "Test results";
-        out += "\n" + "parameter spec name  priKL   pubKL encKL capKL  keyE"   + "\n";
-        for (int i = 0; i < nrOfSpecs; i++) {
-            String out1 = String.format("%-20s%6d%8d%6d%6d%6b%n", parameterSpecName[i], privateKeyLength[i], publicKeyLength[i], encryptionKeyLength[i], encapsulatedKeyLength[i], encryptionKeysEquals[i]);
-            out += out1;
-        }
-        out += "\n" + "Legend: priKL privateKey length, pubKL publicKey length, encKL encryption key length, "
-                + "capKL encapsulated key length" + "\n";
-        out += "****************************************\n";
-        return out;
+    private static void runProcedure(KyberParameterSpec kyberParameterSpec, KeyPair alreadyGeneratedKeyPair){
+        // when this function is called we assume we have made the necessary checks to guarantee a valid KeyPair exists
+        PrivateKey privateKey = alreadyGeneratedKeyPair.getPrivate();
+        PublicKey publicKey = alreadyGeneratedKeyPair.getPublic();
+        byte[] privateKeyByte = privateKey.getEncoded();
+        byte[] publicKeyByte = publicKey.getEncoded();
+        PrivateKey privateKeyLoad = getChrystalsKyberPrivateKeyFromEncoded(privateKeyByte);
+        PublicKey publicKeyLoad = getChrystalsKyberPublicKeyFromEncoded(publicKeyByte);
+        SecretKeyWithEncapsulation secretKeyWithEncapsulationSender = pqcGenerateChrystalsKyberEncryptionKey(publicKeyLoad);
+        byte[] encryptionKey = secretKeyWithEncapsulationSender.getEncoded();
+        byte[] encapsulatedKey = secretKeyWithEncapsulationSender.getEncapsulation();
+        byte[] decryptionKey = pqcGenerateChrystalsKyberDecryptionKey(privateKeyLoad, encapsulatedKey);
+        boolean keysAreEqual = Arrays.areEqual(encryptionKey, decryptionKey);
     }
 
-    private static String shortenString (String input) {
-        if (input != null && input.length() > 32) {
-            return input.substring(0, 32) + " ...";
-        } else {
-            return input;
-        }
+    private static void runProcedure(KyberParameterSpec kyberParameterSpec){
+        KeyPair keyPair = generateChrystalsKyberKeyPair(kyberParameterSpec);
+        PrivateKey privateKey = keyPair.getPrivate();
+        PublicKey publicKey = keyPair.getPublic();
+        byte[] privateKeyByte = privateKey.getEncoded();
+        byte[] publicKeyByte = publicKey.getEncoded();
+        PrivateKey privateKeyLoad = getChrystalsKyberPrivateKeyFromEncoded(privateKeyByte);
+        PublicKey publicKeyLoad = getChrystalsKyberPublicKeyFromEncoded(publicKeyByte);
+        SecretKeyWithEncapsulation secretKeyWithEncapsulationSender = pqcGenerateChrystalsKyberEncryptionKey(publicKeyLoad);
+        byte[] encryptionKey = secretKeyWithEncapsulationSender.getEncoded();
+        byte[] encapsulatedKey = secretKeyWithEncapsulationSender.getEncapsulation();
+        byte[] decryptionKey = pqcGenerateChrystalsKyberDecryptionKey(privateKeyLoad, encapsulatedKey);
+        boolean keysAreEqual = Arrays.areEqual(encryptionKey, decryptionKey);
     }
+
 
     private static KeyPair generateChrystalsKyberKeyPair(KyberParameterSpec kyberParameterSpec) {
         try {
@@ -151,6 +82,7 @@ public class PqcChrystalsKyberKem {
             keyGen = KeyGenerator.getInstance("KYBER", "BCPQC");
             keyGen.init(new KEMGenerateSpec((PublicKey) publicKey, "AES"), new SecureRandom());
             SecretKeyWithEncapsulation secEnc1 = (SecretKeyWithEncapsulation) keyGen.generateKey();
+
             return secEnc1;
         } catch (NoSuchAlgorithmException | NoSuchProviderException | InvalidAlgorithmParameterException e) {
             e.printStackTrace();

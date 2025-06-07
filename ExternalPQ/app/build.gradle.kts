@@ -48,6 +48,7 @@ dependencies {
     implementation("com.journeyapps:zxing-android-embedded:4.3.0")
     implementation("com.google.android.material:material:1.10.0")
     implementation(libs.activity)
+    implementation("com.google.zxing:core:3.5.2")
     implementation("org.bouncycastle:bcprov-ext-jdk18on:1.72")
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)

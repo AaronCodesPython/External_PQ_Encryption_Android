@@ -9,43 +9,43 @@
     android:background="#D2D2D2"
     tools:context=".IO_Activity">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:id="@+id/contact_list_recycleView"
-        android:layout_weight="0.9"/>
+
     <ListView
         android:id="@+id/contactListView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.9"
         android:divider="@android:color/darker_gray"
         android:dividerHeight="1dp"/>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="0.1">
-        <ImageButton
-            android:id="@+id/encrypt_button"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_weight="1"
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_horizontal">
 
-            android:layout_marginRight="6dp"
-            android:layout_marginLeft="6dp"
-            android:src="@drawable/lock_48px"
-            android:background="@drawable/rounded_corners"
-            android:contentDescription="Encrypt" />
+            <ImageButton
+                android:id="@+id/addContactsButton"
+                android:layout_width="0dp"
+                android:backgroundTint="#D2D2D2"
+                android:orientation="vertical"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.5"
+                app:srcCompat="@drawable/add_40dp_000000_fill1_wght400_grad0_opsz40" />
+            <ImageButton
+                android:id="@+id/homeButton"
+                android:layout_width="0dp"
+                android:backgroundTint="#D2D2D2"
+                android:orientation="vertical"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.5"
+                app:srcCompat="@drawable/home_40dp_000000_fill1_wght400_grad0_opsz40" />
 
 
-        <ImageButton
-            android:id="@+id/contacts_button"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_weight="1"
-            android:src="@drawable/person_48px"
-            android:background="@drawable/rounded_corners"
-            android:layout_marginRight="6dp"
-            android:layout_marginLeft="6dp"
-            android:contentDescription="Contacts" />
+        </LinearLayout>
+
     </LinearLayout>
 </LinearLayout>

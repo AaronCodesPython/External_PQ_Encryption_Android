@@ -3,24 +3,19 @@ package com.example.externalpq;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 import com.example.externalpq.data.Contact;
 import com.example.externalpq.data.Crypto;
 import com.example.externalpq.databinding.ActivityIoBinding;
-import com.example.externalpq.databinding.ActivityMainBinding;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.pqc.jcajce.provider.BouncyCastlePQCProvider;
@@ -39,7 +34,7 @@ public class IO_Activity extends AppCompatActivity {
         binding = ActivityIoBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         binding.outputTextfield.setFocusable(false);
-        contacts = contact_screen.readContacts(this);
+        contacts = ContactActivity.readContacts(this);
         currentContact = (Contact) binding.contactSpinner.getSelectedItem();
         ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
 
@@ -83,15 +78,31 @@ public class IO_Activity extends AppCompatActivity {
         });
 
         binding.contactSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-             @Override
-             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                 //String selectedItem = parent.getItemAtPosition(position).toString();
-                 currentContact = (Contact) parent.getItemAtPosition(position);
-             }
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                currentContact = (Contact) parent.getItemAtPosition(position);
+
+                // Re-run logic to update outputTextfield
+                String inputText = binding.inputField.getText().toString();
+                if (!inputText.isEmpty()) {
+                    try {
+                        if (binding.mainToggle.getCheckedButtonId() == binding.encryptButton.getId()) {
+                            binding.outputTextfield.setText(
+                                    Crypto.AESUtil.encrypt(inputText, Crypto.get_shared_secret(currentContact))
+                            );
+                        } else if (binding.mainToggle.getCheckedButtonId() == binding.decryptButton.getId()) {
+                            binding.outputTextfield.setText(
+                                    Crypto.AESUtil.decrypt(inputText, Crypto.get_shared_secret(currentContact))
+                            );
+                        }
+                    } catch (Exception e) {
+                        Log.e("encryption_info", "Failed to update on contact change: " + e.getMessage());
+                    }
+                }
+            }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-
             }
         });
 
@@ -114,6 +125,13 @@ public class IO_Activity extends AppCompatActivity {
 
         });
 
+        binding.homeButton.setOnClickListener(new View.OnClickListener() {
+            @Override public void onClick(View v) {
+                Intent intent = new Intent(IO_Activity.this, MainActivity.class);
+                startActivity(intent);
+            }
+
+        });
 
         binding.copyButton.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View v) {
@@ -123,7 +141,19 @@ public class IO_Activity extends AppCompatActivity {
 
         });
 
+        binding.shareButton.setOnClickListener(new View.OnClickListener() {
+            @Override public void onClick(View v) {
+                String message = binding.outputTextfield.getText().toString();
 
+                Intent intent = new Intent(Intent.ACTION_SEND);
+                intent.setType("text/plain");
+                intent.putExtra(Intent.EXTRA_TEXT, message);
+
+                Intent chooser = Intent.createChooser(intent, "Share via");
+                startActivity(chooser);
+            }
+
+        });
 
        /* ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());

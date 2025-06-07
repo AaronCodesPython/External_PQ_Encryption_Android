@@ -31,7 +31,6 @@ public class PqcChrystalsKyberKem {
         }
     }
 
-        out += "\n" + "\n************************************\n" +
 
     private static void runProcedure(KyberParameterSpec kyberParameterSpec, KeyPair alreadyGeneratedKeyPair){
         // when this function is called we assume we have made the necessary checks to guarantee a valid KeyPair exists

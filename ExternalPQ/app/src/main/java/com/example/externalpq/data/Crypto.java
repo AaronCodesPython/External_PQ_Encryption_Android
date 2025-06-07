@@ -1,24 +1,61 @@
 package com.example.externalpq.data;
 
 import java.nio.charset.StandardCharsets;
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
+import java.security.KeyStore;
+import java.security.PublicKey;
 import java.security.SecureRandom;
+
+import android.security.keystore.KeyGenParameterSpec;
+import android.security.keystore.KeyProperties;
 import android.util.Base64;
+import android.util.Log;
 
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
-import java.security.MessageDigest;
 //
 //
 //
 
 public class Crypto {
     private String pubKey;
-    private String privKey;
 
-    public static byte[] generate_pubKey(){
-        return "2304i22304i2532022304i2532022304i2532022304i2532022304i2532022304i2532022304i2532022304i2532022304i2532022304i2532022304i2532022304i25320253202".getBytes(StandardCharsets.UTF_8);
+    public static void generate_keys(){
+        try{
+            KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance(
+                    KeyProperties.KEY_ALGORITHM_RSA, "AndroidKeyStore");
+
+            keyPairGenerator.initialize(
+                    new KeyGenParameterSpec.Builder("app_rsa_key",
+                            KeyProperties.PURPOSE_ENCRYPT | KeyProperties.PURPOSE_DECRYPT)
+                            .setKeySize(2048)
+                            .setDigests(KeyProperties.DIGEST_SHA256, KeyProperties.DIGEST_SHA512)
+                            .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_RSA_PKCS1)
+                            .build());
+
+            KeyPair keyPair = keyPairGenerator.generateKeyPair();
+        }catch (Exception e){
+            Log.d("debugInfo1", e.toString());
+            e.printStackTrace();
+        }
+
+    }
+    public static byte[] get_pubKey(){
+        try{
+            KeyStore keyStore = KeyStore.getInstance("AndroidKeyStore");
+            keyStore.load(null);
+
+            PublicKey publicKey = keyStore.getCertificate("app_rsa_key").getPublicKey();
+            String encodedPublicKey = Base64.encodeToString(publicKey.getEncoded(), Base64.DEFAULT);
+            return encodedPublicKey.getBytes(StandardCharsets.UTF_8);
+        } catch (Exception e) {
+            Log.d("debugInfo2", e.toString());
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
     }
 
     public static byte[] hexToBytes(String hex) {

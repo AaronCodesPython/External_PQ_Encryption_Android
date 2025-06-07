@@ -60,15 +60,7 @@
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:contentDescription="Refresh" />
 
-                <ImageButton
-                    android:id="@+id/wechat_share_button"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:scaleType="centerInside"
-                    android:background="?attr/selectableItemBackgroundBorderless"
-                    android:contentDescription="Wechat Share"
-                    android:layout_weight="1"
-                    android:src="@drawable/wechat_logo_icon_229288_2" />
+
             <ImageButton
                 android:id="@+id/share_button"
                 android:layout_width="48dp"
@@ -124,3 +116,5 @@
         android:contentDescription="Contacts" />
 </LinearLayout>
 </LinearLayout>
+
+

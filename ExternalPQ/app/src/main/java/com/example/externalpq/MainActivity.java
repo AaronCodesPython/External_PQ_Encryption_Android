@@ -1,21 +1,22 @@
 package com.example.externalpq;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
+import androidx.core.content.FileProvider;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.externalpq.data.Crypto;
 import com.example.externalpq.databinding.ActivityMainBinding;
-import com.google.zxing.BarcodeFormat;
-import com.google.zxing.WriterException;
-import com.journeyapps.barcodescanner.BarcodeEncoder;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -26,26 +27,57 @@ import java.io.InputStreamReader;
 
 public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding;
-    private Button generateQrBtn;
-    private ImageView qrCodeImage;
+    private void shareImage(Bitmap bitmap) {
+        try {
+            File cachePath = new File(getCacheDir(), "images");
+           // cachePath.mkdirs();
+            File file = new File(cachePath, "shared_image.png");
+            FileOutputStream stream = new FileOutputStream(file);
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+            stream.close();
+
+            Uri contentUri = FileProvider.getUriForFile(
+                    this,
+                    getApplicationContext().getPackageName() + ".fileprovider",
+                    file
+            );
+
+            if (contentUri != null) {
+                Intent shareIntent = new Intent(Intent.ACTION_SEND);
+                shareIntent.setType("image/*");
+                shareIntent.putExtra(Intent.EXTRA_STREAM, contentUri);
+                shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                startActivity(Intent.createChooser(shareIntent, "Share Image Via"));
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(this, "Failed to share image", Toast.LENGTH_SHORT).show();
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         super.onCreate(savedInstanceState);
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        int qrWidth = binding.qrCodeImage.getWidth();
-        int qrHeight = binding.qrCodeImage.getHeight();
 
         binding.refreshButton.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View v) {
-                generateQRCode("you stink Babe, you stink Babe, you stink Babe, you stink Babe, you stink Babe, you stink Babe, you stink Babe, you stink Babe, you stink Babe, you stink Babe, you stink Babe, you stink Babe, you stink Babe, you stink Babe, you stink Babe, you stink Babe, you stink Babe, you stink Babe, you stink Babe, you stink Babe, you stink Babe, you stink Babe, you stink Babe, you stink Babe, you stink Babe, you stink Babe, you stink Babe, you stink Babe, you stink Babe, you stink Babe, you stink Babe, you stink Babe, you stink Babe, you stink Babe, you stink Babe, you stink Babe, you stink Babe, you stink Babe, you stink Babe, you stink Babe, you stink Babe, you stink Babe, you stink Babe, you stink Babe, you stink Babe, you stink Babe, you stink Babe, you stink Babe, you stink Babe, you stink Babe, you stink Babe, you stink Babe, you stink Babe, you \n" +
-                        "you stink Babe, you stink Babe, you stink Babe, you stink Babe, you stink Babe, you stink Babe, you stink Babe, you stink Babe, you stink Babe, you stink Babe, you stink Babe, you stink Babe, you stink Babe, you stink Babe, you stink Babe, you stink Babe, you stink Babe, you stink Babe, you stink Babe, you stink Babe, you stink Babe, you stink Babe, you stink Babe, you stink Babe, you stink Babe, you stink Babe, you stink Babe, you stink Babe, you stink Babe, you stink Babe, you stink Babe, you stink Babe, you stink Babe, you stink Babe, you stink Babe, you stink Babe, you stink Babe, you stink Babe, you stink Babe, you stink Babe, you stink Babe, you stink Babe, you stink Babe, you stink Babe, you stink Babe, you stink Babe, you stink Babe, you stink Babe, you stink Babe, you stink Babe, you stink Babe, you stink Babe, you stink Babe, you stink Babe, you stink Babe, you stink Babe, you stink Babe,", qrWidth, qrHeight);
+                QRCodeManager.generateQRCode(Crypto.get_pubKey().toString(), binding);
                 }
 
         });
 
+        binding.shareButton.setOnClickListener(new View.OnClickListener() {
+            @Override public void onClick(View v) {
+                Bitmap bitmap = getBitmapFromImageView(binding.qrCodeImage);
+                shareImage(bitmap);
+            }
+
+        });
         binding.encryptButton.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, IO_Activity.class);
@@ -53,16 +85,18 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+
+
         binding.contactsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, contact_screen.class);
+                Intent intent = new Intent(MainActivity.this, ContactActivity.class);
                 startActivity(intent);
             }
         });
 
         String qrData = readPubKey();
-        generateQRCode(qrData,qrWidth,qrHeight);
+        QRCodeManager.generateQRCode(qrData,binding);
     }
     private String readPubKey(){
         StringBuilder sb = new StringBuilder();
@@ -80,8 +114,9 @@ public class MainActivity extends AppCompatActivity {
             } catch (IOException e) {}
         }
         else{
+            Crypto.generate_keys();
             try (FileOutputStream fos = openFileOutput("pub_keyData.txt", MODE_PRIVATE)) {
-                fos.write(Crypto.generate_pubKey());
+                fos.write(Crypto.get_pubKey());
             } catch (IOException e) {}
             return readPubKey();
         }
@@ -89,28 +124,26 @@ public class MainActivity extends AppCompatActivity {
         return sb.toString();
 
     }
-    private void generateQRCode(String text, int qrWidth, int qrHeight){
-        BarcodeEncoder barcodeEncoder
-                = new BarcodeEncoder();
-        try {
 
-            // This method returns a Bitmap image of the
-            // encoded text with a height and width of 400
-            // pixels.
-            Bitmap bitmap = barcodeEncoder.encodeBitmap(text, BarcodeFormat.QR_CODE, qrWidth, qrHeight);
-            // Sets the Bitmap to ImageView
-            binding.qrCodeImage.setImageBitmap(bitmap);
-        }
-        catch (WriterException e) {
-            e.printStackTrace();
+    private Bitmap getBitmapFromImageView(ImageView imageView) {
+        Drawable drawable = imageView.getDrawable();
+        if (drawable instanceof BitmapDrawable) {
+            return ((BitmapDrawable) drawable).getBitmap();
+        } else {
+            // Optional: handle other drawable types
+            Bitmap bitmap = Bitmap.createBitmap(
+                    drawable.getIntrinsicWidth(),
+                    drawable.getIntrinsicHeight(),
+                    Bitmap.Config.ARGB_8888
+            );
+            Canvas canvas = new Canvas(bitmap);
+            drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+            drawable.draw(canvas);
+            return bitmap;
         }
     }
 
-    /**
-     * A native method that is implemented by the 'externalpq' native library,
-     * which is packaged with this application.
-     */
-    public native String stringFromJNI();
+
 }
 
 /*

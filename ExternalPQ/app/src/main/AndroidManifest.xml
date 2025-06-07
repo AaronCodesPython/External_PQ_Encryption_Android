@@ -12,14 +12,28 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ExternalPQ"
         tools:targetApi="31">
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
+
         <activity
-            android:name=".contact_screen"
+            android:name=".ContactActivity"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".IO_Activity"
-            android:exported="false" />
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan"
+        android:exported="false" />
         <activity
             android:name=".MainActivity"
+            android:screenOrientation="portrait"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

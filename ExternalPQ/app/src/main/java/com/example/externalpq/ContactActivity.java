@@ -1,9 +1,14 @@
 package com.example.externalpq;
 
 import android.content.ContextWrapper;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.EditText;
 
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.externalpq.adapter.ContactAdapter;
@@ -19,7 +24,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
-public class contact_screen extends AppCompatActivity {
+public class ContactActivity extends AppCompatActivity {
 
     private ActivityContactScreenBinding binding;
     private List<Contact> contacts;
@@ -42,6 +47,22 @@ public class contact_screen extends AppCompatActivity {
             // Optionally delete from file
         });
         binding.contactListView.setAdapter(adapter);
+
+        binding.addContactsButton.setOnClickListener(new View.OnClickListener() {
+            @Override public void onClick(View v) {
+
+                ImagePickerDialogFragment dialog = new ImagePickerDialogFragment();
+                dialog.show(getSupportFragmentManager(), "imagePickerDialog");
+
+            }
+        });
+
+        binding.homeButton.setOnClickListener(new View.OnClickListener() {
+            @Override public void onClick(View v) {
+                Intent intent = new Intent(ContactActivity.this, MainActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     public static List<Contact> readContacts(ContextWrapper t){

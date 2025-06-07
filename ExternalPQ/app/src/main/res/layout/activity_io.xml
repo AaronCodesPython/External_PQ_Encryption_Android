@@ -1,10 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<ScrollView android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:isScrollContainer="false"
+    android:fillViewport="true"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <LinearLayout
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:fitsSystemWindows="true"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="vertical"
     android:background="#D2D2D2"
     tools:context=".IO_Activity">
@@ -106,13 +112,40 @@
         android:paddingTop="6dp"
         android:paddingRight="6dp"
         android:paddingBottom="4dp" />
-
-    <ImageButton
-        android:id="@+id/copyButton"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="0.08"
-        app:srcCompat="@drawable/content_copy_40dp_000000_fill1_wght400_grad0_opsz40" />
+        android:orientation="horizontal"
+        android:gravity="center_horizontal">
 
+        <ImageButton
+            android:id="@+id/copyButton"
+            android:layout_width="0dp"
+            android:backgroundTint="#D2D2D2"
+            android:orientation="vertical"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+            app:srcCompat="@drawable/content_copy_40dp_000000_fill1_wght400_grad0_opsz40" />
+        <ImageButton
+            android:id="@+id/homeButton"
+            android:layout_width="0dp"
+            android:backgroundTint="#D2D2D2"
+            android:orientation="vertical"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+            app:srcCompat="@drawable/home_40dp_000000_fill1_wght400_grad0_opsz40" />
+
+        <ImageButton
+            android:id="@+id/share_button"
+            android:orientation="vertical"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+            android:src="@drawable/baseline_share_24"
+            android:backgroundTint="#D2D2D2"
+            android:contentDescription="Share" />
+    </LinearLayout>
 
 </LinearLayout>
+</ScrollView>

@@ -92,7 +92,7 @@ public class ContactActivity extends AppCompatActivity {
         return contacts;
     }
 
-   // private voi deleteContact()
+
 
 
 }

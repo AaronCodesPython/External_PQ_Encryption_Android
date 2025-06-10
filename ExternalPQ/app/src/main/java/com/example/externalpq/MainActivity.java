@@ -30,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
     private void shareImage(Bitmap bitmap) {
         try {
             File cachePath = new File(getCacheDir(), "images");
-           // cachePath.mkdirs();
+            cachePath.mkdirs();
             File file = new File(cachePath, "shared_image.png");
             FileOutputStream stream = new FileOutputStream(file);
             bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
@@ -66,7 +66,8 @@ public class MainActivity extends AppCompatActivity {
 
         binding.refreshButton.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View v) {
-                QRCodeManager.generateQRCode(Crypto.get_pubKey().toString(), binding);
+                Crypto.generate_keys();
+                QRCodeManager.generateQRCode(Crypto.getOwnPubKey(), binding);
                 }
 
         });
@@ -95,35 +96,10 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        String qrData = readPubKey();
+        String qrData = Crypto.getOwnPubKey();
         QRCodeManager.generateQRCode(qrData,binding);
     }
-    private String readPubKey(){
-        StringBuilder sb = new StringBuilder();
-        File file = new File(getFilesDir(), "pub_keyData.txt");
-        if(file.exists()){
-            try (FileInputStream fis = new FileInputStream(file);
-                 InputStreamReader isr = new InputStreamReader(fis);
-                 BufferedReader reader = new BufferedReader(isr)) {
 
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    sb.append(line).append("\n");
-                }
-
-            } catch (IOException e) {}
-        }
-        else{
-            Crypto.generate_keys();
-            try (FileOutputStream fos = openFileOutput("pub_keyData.txt", MODE_PRIVATE)) {
-                fos.write(Crypto.get_pubKey());
-            } catch (IOException e) {}
-            return readPubKey();
-        }
-
-        return sb.toString();
-
-    }
 
     private Bitmap getBitmapFromImageView(ImageView imageView) {
         Drawable drawable = imageView.getDrawable();

@@ -77,7 +77,7 @@ public class ImagePickerDialogFragment extends DialogFragment {
         });
 
         builder.setView(view)
-                .setTitle("Select an Image")
+                .setTitle("Add a New Contact")
                 .setPositiveButton("OK", (dialog, id) -> {
                     // here we want to read the qr code
                     String pubKey = QRCodeManager.decodeImageFromUri(getContext(), currentUri);
@@ -112,7 +112,7 @@ public class ImagePickerDialogFragment extends DialogFragment {
             Button positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
             if (positiveButton != null) {
                 positiveButton.setTextSize(20);
-                positiveButton.setTextColor(Color.BLACK); // Material green
+                positiveButton.setTextColor(Color.BLACK);
             }
         }
     }

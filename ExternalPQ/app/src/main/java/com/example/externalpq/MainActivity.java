@@ -11,6 +11,8 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -24,9 +26,11 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.time.Instant;
 
 public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding;
+    TimerManager timerManager;
     private void shareImage(Bitmap bitmap) {
         try {
             File cachePath = new File(getCacheDir(), "images");
@@ -61,6 +65,7 @@ public class MainActivity extends AppCompatActivity {
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         super.onCreate(savedInstanceState);
 
+        timerManager = new TimerManager();
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
@@ -95,6 +100,20 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+        Handler handler = new Handler(Looper.getMainLooper());
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                long currTime = Instant.now().getEpochSecond();
+                if(timerManager.creationTime == -1){
+                    timerManager.getCreationTime(MainActivity.this);
+                }
+                String textToShow ="Valid For: "+ TimerManager.formatTimeDifference(currTime,timerManager.creationTime);
+                binding.remainingTime.setText(textToShow);
+                handler.postDelayed(this, 1000);
+            }
+        };
+        handler.post(runnable);
 
         String qrData = Crypto.getOwnPubKey();
         QRCodeManager.generateQRCode(qrData,binding);
@@ -106,7 +125,6 @@ public class MainActivity extends AppCompatActivity {
         if (drawable instanceof BitmapDrawable) {
             return ((BitmapDrawable) drawable).getBitmap();
         } else {
-            // Optional: handle other drawable types
             Bitmap bitmap = Bitmap.createBitmap(
                     drawable.getIntrinsicWidth(),
                     drawable.getIntrinsicHeight(),

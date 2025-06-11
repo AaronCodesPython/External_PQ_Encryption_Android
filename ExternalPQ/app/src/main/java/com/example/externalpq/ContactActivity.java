@@ -1,14 +1,10 @@
 package com.example.externalpq;
 
 import android.content.ContextWrapper;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.EditText;
 
-
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.externalpq.adapter.ContactAdapter;
@@ -84,7 +80,7 @@ public class ContactActivity extends AppCompatActivity {
         }
         else{
             try (FileOutputStream fos = t.openFileOutput("contacts.txt", MODE_PRIVATE)) {
-                fos.write("Alice;123000000000000000;0\nBob;000000000000000000;1".getBytes());
+                fos.write("Alice;MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEUPIFLP51gZT1ECczjijUG4jvkb6+qFlaolhtJPK0BShbIOBYueYMWoFpLy1J04Fk6q53EbV07KC0XO0/Z3oGKQ==;0\nBob;MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEskhR0pIGwDCGYdoHA4pp/AQk6aBcSXzvs4wPlKiDcdMi3RXuG5rCdiYm/miVS3ST6WhYgyYcjS48zdUSqU8lQA==;1".getBytes());
             } catch (IOException e) {}
             return readContacts(t);
 

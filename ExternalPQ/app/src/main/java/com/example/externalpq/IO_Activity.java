@@ -33,9 +33,12 @@ public class IO_Activity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityIoBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        initBouncyCastle();
         binding.outputTextfield.setFocusable(false);
         contacts = ContactActivity.readContacts(this);
         currentContact = (Contact) binding.contactSpinner.getSelectedItem();
+
+
         ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
 
 
@@ -52,24 +55,32 @@ public class IO_Activity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                //Log.d("encryption_info",Crypto.encrypt(s.toString(), (Contact) binding.contactSpinner.getSelectedItem()));
-                try{
-                    if(binding.mainToggle.getCheckedButtonId() == binding.encryptButton.getId()){
-                        binding.outputTextfield.setText(Crypto.AESUtil.encrypt(binding.inputField.getText().toString(), Crypto.get_shared_secret(currentContact)));
+                new Thread(()->{
+                    final String input = s.toString();
+                    String set_to = "";
+                    try{
+                        if(binding.mainToggle.getCheckedButtonId() == binding.encryptButton.getId()){
+                             set_to = Crypto.AESUtil.encrypt(binding.inputField.getText().toString(), Crypto.get_shared_secret(currentContact));
 
-                    }else if(binding.mainToggle.getCheckedButtonId() == binding.decryptButton.getId()){
-                        binding.outputTextfield.setText(Crypto.AESUtil.decrypt(binding.inputField.getText().toString(), Crypto.get_shared_secret(currentContact)));
+                        }else if(binding.mainToggle.getCheckedButtonId() == binding.decryptButton.getId()){
+                            set_to = Crypto.AESUtil.decrypt(binding.inputField.getText().toString(), Crypto.get_shared_secret(currentContact), IO_Activity.this);
+                        }
+                        final String output = set_to;
+
+
+                            if(input.equals(binding.inputField.getText().toString())){
+                                binding.outputTextfield.setText(output);
+                            }
+                            else{
+                                Log.d("DataRace", input+" : "+binding.inputField.getText().toString());
+                            }
 
                     }
-                    else{
-
+                    catch (Exception e){
+                        Log.d("encryption_info", "error catched 2:"+e.toString());
+                        e.printStackTrace();
                     }
-                    //Toast.makeText(IO_Activity.this, , Toast.LENGTH_SHORT).show();
-                }
-                catch (Exception e){
-                    Log.d("encryption_info", "error catched 2:"+e.toString());
-                    e.printStackTrace();
-                }
+                }).start();
             }
 
             @Override
@@ -92,7 +103,7 @@ public class IO_Activity extends AppCompatActivity {
                             );
                         } else if (binding.mainToggle.getCheckedButtonId() == binding.decryptButton.getId()) {
                             binding.outputTextfield.setText(
-                                    Crypto.AESUtil.decrypt(inputText, Crypto.get_shared_secret(currentContact))
+                                    Crypto.AESUtil.decrypt(inputText, Crypto.get_shared_secret(currentContact), IO_Activity.this)
                             );
                         }
                     } catch (Exception e) {
@@ -161,7 +172,7 @@ public class IO_Activity extends AppCompatActivity {
             return insets;
         });*/
 
-        initBouncyCastle();
+
     }
 
     private void initBouncyCastle() {

@@ -1,6 +1,7 @@
 package com.example.externalpq.data;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 public class Contact{
     public String identifier;
@@ -18,4 +19,12 @@ public class Contact{
         return this.identifier;
     }
 
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        if(obj.getClass() != this.getClass()){
+            return false;
+        }
+        Contact c = (Contact) obj;
+        return this.key.equals(c.key) && this.identifier.equals(c.identifier);
+    }
 }

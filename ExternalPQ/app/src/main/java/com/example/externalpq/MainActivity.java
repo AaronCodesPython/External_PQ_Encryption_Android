@@ -31,6 +31,7 @@ import java.time.Instant;
 public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding;
     TimerManager timerManager;
+    Crypto cryptoManager;
     private void shareImage(Bitmap bitmap) {
         try {
             File cachePath = new File(getCacheDir(), "images");
@@ -64,15 +65,15 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         super.onCreate(savedInstanceState);
-
+        cryptoManager = new Crypto();
         timerManager = new TimerManager();
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
         binding.refreshButton.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View v) {
-                Crypto.generate_keys();
-                QRCodeManager.generateQRCode(Crypto.getOwnPubKey(), binding);
+                cryptoManager.generate_keys();
+                QRCodeManager.generateQRCode(cryptoManager.getOwnPubKey(), binding);
                 }
 
         });
@@ -105,8 +106,15 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void run() {
                 long currTime = Instant.now().getEpochSecond();
+                long goaltime;
                 if(timerManager.creationTime == -1){
-                    timerManager.getCreationTime(MainActivity.this);
+                    goaltime = timerManager.getCreationTime(MainActivity.this);
+                }else{
+                    goaltime = timerManager.creationTime;
+                }
+                if(timerManager.needsRefresh(goaltime,currTime)){
+                    cryptoManager.generate_keys();
+                    timerManager.writeTime(MainActivity.this);
                 }
                 String textToShow ="Valid For: "+ TimerManager.formatTimeDifference(currTime,timerManager.creationTime);
                 binding.remainingTime.setText(textToShow);
@@ -115,7 +123,7 @@ public class MainActivity extends AppCompatActivity {
         };
         handler.post(runnable);
 
-        String qrData = Crypto.getOwnPubKey();
+        String qrData = cryptoManager.getOwnPubKey();
         QRCodeManager.generateQRCode(qrData,binding);
     }
 

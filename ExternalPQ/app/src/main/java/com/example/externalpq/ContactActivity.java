@@ -63,7 +63,7 @@ public class ContactActivity extends AppCompatActivity {
 
     public static List<Contact> readContacts(ContextWrapper t){
         ArrayList<Contact> contacts = new ArrayList<>();
-        File file = new File(t.getFilesDir(), "contacts.txt");
+        File file = new File(t.getFilesDir(), "contacts_data.txt");
         if(file.exists()){
             try (FileInputStream fis = new FileInputStream(file);
                  InputStreamReader isr = new InputStreamReader(fis);
@@ -79,7 +79,7 @@ public class ContactActivity extends AppCompatActivity {
             } catch (IOException e) {}
         }
         else{
-            try (FileOutputStream fos = t.openFileOutput("contacts.txt", MODE_PRIVATE)) {
+            try (FileOutputStream fos = t.openFileOutput("contacts_data.txt", MODE_PRIVATE)) {
                 fos.write("Alice;MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAE+9IMLPT63wxKgSb/U0Nm/0TAN6uQUy/Q+WVNsuQHRCgu56onRzeqe/lBJBl/Fqzvma14G27GLaw4OPPwZO3GXA==;0\nBob;MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAErO7232dz7Q0UrPSgFlV/kDrXEttmtOQsZ0ytnEBntwk5CH3Bj7o29SqDYLOr7sMUdz5CBE7ObqUV4QMrc3yYDw==;1".getBytes());
             } catch (IOException e) {}
             return readContacts(t);

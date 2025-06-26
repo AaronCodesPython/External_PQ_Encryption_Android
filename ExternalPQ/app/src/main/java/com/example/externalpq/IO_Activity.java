@@ -27,11 +27,13 @@ public class IO_Activity extends AppCompatActivity {
     private ActivityIoBinding binding;
     List<Contact> contacts;
     Contact currentContact;
+    Crypto cryptoManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityIoBinding.inflate(getLayoutInflater());
+        cryptoManager = new Crypto();
         setContentView(binding.getRoot());
         initBouncyCastle();
         binding.outputTextfield.setFocusable(false);
@@ -51,6 +53,7 @@ public class IO_Activity extends AppCompatActivity {
         binding.inputField.addTextChangedListener(new  android.text.TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
             }
 
             @Override
@@ -60,16 +63,16 @@ public class IO_Activity extends AppCompatActivity {
                     String set_to = "";
                     try{
                         if(binding.mainToggle.getCheckedButtonId() == binding.encryptButton.getId()){
-                             set_to = Crypto.AESUtil.encrypt(binding.inputField.getText().toString(), Crypto.get_shared_secret(currentContact));
+                             set_to = Crypto.AESUtil.encrypt(binding.inputField.getText().toString(), cryptoManager.get_shared_secret(currentContact));
 
                         }else if(binding.mainToggle.getCheckedButtonId() == binding.decryptButton.getId()){
-                            set_to = Crypto.AESUtil.decrypt(binding.inputField.getText().toString(), Crypto.get_shared_secret(currentContact), IO_Activity.this);
+                            set_to = Crypto.AESUtil.decrypt(binding.inputField.getText().toString(), cryptoManager.get_shared_secret(currentContact), IO_Activity.this);
                         }
                         final String output = set_to;
 
 
                             if(input.equals(binding.inputField.getText().toString())){
-                                binding.outputTextfield.setText(output);
+                                runOnUiThread(() -> binding.outputTextfield.setText(output));
                             }
                             else{
                                 Log.d("DataRace", input+" : "+binding.inputField.getText().toString());
@@ -99,11 +102,11 @@ public class IO_Activity extends AppCompatActivity {
                     try {
                         if (binding.mainToggle.getCheckedButtonId() == binding.encryptButton.getId()) {
                             binding.outputTextfield.setText(
-                                    Crypto.AESUtil.encrypt(inputText, Crypto.get_shared_secret(currentContact))
+                                    Crypto.AESUtil.encrypt(inputText, cryptoManager.get_shared_secret(currentContact))
                             );
                         } else if (binding.mainToggle.getCheckedButtonId() == binding.decryptButton.getId()) {
                             binding.outputTextfield.setText(
-                                    Crypto.AESUtil.decrypt(inputText, Crypto.get_shared_secret(currentContact), IO_Activity.this)
+                                    Crypto.AESUtil.decrypt(inputText, cryptoManager.get_shared_secret(currentContact), IO_Activity.this)
                             );
                         }
                     } catch (Exception e) {

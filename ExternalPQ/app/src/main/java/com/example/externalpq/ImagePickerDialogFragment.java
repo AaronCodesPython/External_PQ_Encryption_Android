@@ -98,7 +98,7 @@ public class ImagePickerDialogFragment extends DialogFragment {
         List<Contact> contacts = ContactActivity.readContacts(t);
 
         int newId  = (contacts.get(contacts.size()-1).id)+1;
-        try (FileOutputStream fos = t.openFileOutput("contacts.txt", Context.MODE_APPEND)) {
+        try (FileOutputStream fos = t.openFileOutput("contacts_data.txt", Context.MODE_APPEND)) {
             fos.write(("\n"+name+";"+pubkey+";"+newId).getBytes());
         } catch (IOException e) {}
     }

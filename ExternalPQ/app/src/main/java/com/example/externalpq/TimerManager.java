@@ -21,6 +21,12 @@ public class TimerManager {
     public TimerManager(){
         this.creationTime = -1;
     }
+    public void writeTime(ContextWrapper t){
+
+        try (FileOutputStream fos = t.openFileOutput("timer.txt", MODE_PRIVATE)) {
+            fos.write((""+(Instant.now().getEpochSecond()+604800)).getBytes());
+        } catch (IOException e) {}
+    }
     public long getCreationTime(ContextWrapper t){
             File file = new File(t.getFilesDir(), "timer.txt");
             if(file.exists()){
@@ -35,16 +41,22 @@ public class TimerManager {
                 }
             }
             else{
-                try (FileOutputStream fos = t.openFileOutput("timer.txt", MODE_PRIVATE)) {
-                    fos.write((""+(Instant.now().getEpochSecond()+604800)).getBytes());
-                } catch (IOException e) {}
+                writeTime(t);
                 return getCreationTime(t);
 
             }
         return Instant.now().getEpochSecond();
 
     }
+    public  boolean needsRefresh(long goaltime, long Currenttime){
+        if(Currenttime > goaltime){
+            return true;
+        }
+        else{
+            return false;
+        }
 
+    }
     public static String formatTimeDifference(long timestamp1, long timestamp2) {
         long diffSeconds = Math.abs(timestamp2 - timestamp1); // Ensure non-negative
 

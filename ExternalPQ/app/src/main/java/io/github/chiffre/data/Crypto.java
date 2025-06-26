@@ -1,4 +1,4 @@
-package com.example.externalpq.data;
+package io.github.chiffre.data;
 
 import java.nio.charset.StandardCharsets;
 import java.security.KeyFactory;

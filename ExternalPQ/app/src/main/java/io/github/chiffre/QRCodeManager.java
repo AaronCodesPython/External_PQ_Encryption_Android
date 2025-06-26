@@ -1,4 +1,4 @@
-package com.example.externalpq;
+package io.github.chiffre;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -6,7 +6,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.util.Log;
 
-import com.example.externalpq.databinding.ActivityMainBinding;
+import io.github.chiffre.databinding.ActivityMainBinding;
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.BinaryBitmap;

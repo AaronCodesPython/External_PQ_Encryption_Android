@@ -1,4 +1,4 @@
-package com.example.externalpq.adapter;
+package io.github.chiffre.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -8,8 +8,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import com.example.externalpq.R;
-import com.example.externalpq.data.Contact;
+import io.github.chiffre.R;
+import io.github.chiffre.data.Contact;
 
 import java.util.List;
 

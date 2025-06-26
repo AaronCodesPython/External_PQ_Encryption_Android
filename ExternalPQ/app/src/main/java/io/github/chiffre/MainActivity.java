@@ -1,4 +1,4 @@
-package com.example.externalpq;
+package io.github.chiffre;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
@@ -17,8 +17,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.example.externalpq.data.Crypto;
-import com.example.externalpq.databinding.ActivityMainBinding;
+import io.github.chiffre.data.Crypto;
+import io.github.chiffre.databinding.ActivityMainBinding;
 
 import java.io.BufferedReader;
 import java.io.File;

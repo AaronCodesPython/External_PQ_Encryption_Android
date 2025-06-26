@@ -1,4 +1,4 @@
-package com.example.externalpq;
+package io.github.chiffre;
 
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -13,9 +13,9 @@ import android.widget.ArrayAdapter;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.externalpq.data.Contact;
-import com.example.externalpq.data.Crypto;
-import com.example.externalpq.databinding.ActivityIoBinding;
+import io.github.chiffre.data.Contact;
+import io.github.chiffre.data.Crypto;
+import io.github.chiffre.databinding.ActivityIoBinding;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.pqc.jcajce.provider.BouncyCastlePQCProvider;

@@ -19,5 +19,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "ExternalPQ"
+rootProject.name = "Chiffre"
 include(":app")

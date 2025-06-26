@@ -1,4 +1,4 @@
-package com.example.externalpq;
+package io.github.chiffre;
 
 import android.content.ContextWrapper;
 import android.content.Intent;
@@ -7,9 +7,9 @@ import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.externalpq.adapter.ContactAdapter;
-import com.example.externalpq.data.Contact;
-import com.example.externalpq.databinding.ActivityContactScreenBinding;
+import io.github.chiffre.adapter.ContactAdapter;
+import io.github.chiffre.data.Contact;
+import io.github.chiffre.databinding.ActivityContactScreenBinding;
 
 import java.io.BufferedReader;
 import java.io.File;

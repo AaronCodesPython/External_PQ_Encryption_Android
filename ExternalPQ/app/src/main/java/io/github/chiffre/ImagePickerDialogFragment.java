@@ -1,4 +1,4 @@
-package com.example.externalpq;
+package io.github.chiffre;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -24,8 +24,8 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
 
-import com.example.externalpq.data.Contact;
-import com.example.externalpq.data.Crypto;
+import io.github.chiffre.data.Contact;
+import io.github.chiffre.data.Crypto;
 
 import java.io.BufferedReader;
 import java.io.File;

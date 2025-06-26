@@ -3,11 +3,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.externalpq"
+    namespace = "io.github.chiffre"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.example.externalpq"
+        applicationId = "io.github.chiffre"
         minSdk = 31
         targetSdk = 35
         versionCode = 1

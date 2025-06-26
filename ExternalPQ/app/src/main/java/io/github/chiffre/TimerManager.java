@@ -1,10 +1,10 @@
-package com.example.externalpq;
+package io.github.chiffre;
 
 import static android.content.Context.MODE_PRIVATE;
 
 import android.content.ContextWrapper;
 
-import com.example.externalpq.data.Contact;
+import io.github.chiffre.data.Contact;
 
 import java.io.BufferedReader;
 import java.io.File;

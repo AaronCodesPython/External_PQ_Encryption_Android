@@ -1,4 +1,4 @@
-package com.example.externalpq.data;
+package io.github.chiffre.data;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;

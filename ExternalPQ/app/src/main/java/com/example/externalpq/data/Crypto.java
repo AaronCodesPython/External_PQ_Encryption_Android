@@ -40,8 +40,8 @@ public class Crypto {
                             KeyProperties.PURPOSE_AGREE_KEY
                     )
                             .setAlgorithmParameterSpec(new ECGenParameterSpec("secp256r1"))  // NIST P-256
-                            .setIsStrongBoxBacked(false)
                             .setDigests(KeyProperties.DIGEST_SHA256)
+                            .setIsStrongBoxBacked(false)
                             .build()
             );
             KeyPair keyPair = keyPairGenerator.generateKeyPair();
@@ -68,7 +68,10 @@ public class Crypto {
             KeyStore keyStore = KeyStore.getInstance("AndroidKeyStore");
             keyStore.load(null);
             PublicKey publicKey = keyStore.getCertificate("ec_dh_key").getPublicKey();
-            return pubkeyToString(publicKey);
+            byte[] pubKeyBytes = publicKey.getEncoded();
+            String base64Encoded = Base64.encodeToString(pubKeyBytes, Base64.NO_WRAP);
+
+            return base64Encoded;
         }
         catch (NullPointerException e){
             generate_keys();
@@ -80,38 +83,25 @@ public class Crypto {
         }
     }
 
-    public static String pubkeyToString(PublicKey pubKey){
 
-            byte[] publicKeyBytes = pubKey.getEncoded();  // X.509 encoded
-        return Base64.encodeToString(publicKeyBytes, Base64.NO_WRAP);
-
-    }
     public static byte[] get_shared_secret(Contact receiver) throws Exception{
         try {
-            Log.d("sharedSecretGeneration", "Start generating Shared Secret");
 
             // 1. Load your private key from KeyStore
             KeyStore keyStore = KeyStore.getInstance("AndroidKeyStore");
-            Log.d("sharedSecretGeneration", "Aquired Keystore");
 
             keyStore.load(null);
             PrivateKey privateKey = (PrivateKey) keyStore.getKey("ec_dh_key", null);
-            Log.d("sharedSecretGeneration", "Got Private Key");
 
             // 2. Create KeyAgreement instance
             KeyAgreement keyAgreement = KeyAgreement.getInstance("ECDH");
-
             byte[] pubKeyBytes = Base64.decode(receiver.key, Base64.NO_WRAP);
-            Log.d("sharedSecretGeneration", "Decoded pubkey "+ Arrays.toString(pubKeyBytes));
-            Log.d("CryptoProvider", "Using provider: " + keyAgreement.getProvider().getName());
 
             keyAgreement.init(privateKey);
-            Log.d("sharedSecretGeneration", "init KeyAgreement");
 
             keyAgreement.doPhase(StringToPubkey(pubKeyBytes), true);  // Supply peer's public key
 
             // 3. Generate the shared secret
-            Log.d("sharedSecretGeneration", "Finished generating Shared Secret");
             return keyAgreement.generateSecret();  // Returns byte[] (shared secret)
         } catch (Exception e) {
             Log.e("ECDH", "Shared secret computation failed", e);
@@ -159,7 +149,9 @@ public class Crypto {
                 IvParameterSpec ivSpec = new IvParameterSpec(iv);
                 cipher.init(Cipher.DECRYPT_MODE, key, ivSpec);
 
-                return new String(cipher.doFinal(ciphertext), StandardCharsets.UTF_8);
+                String output = new String(cipher.doFinal(ciphertext), StandardCharsets.UTF_8);
+                Log.d("encrypt",output);
+                return output;
             } catch (Exception e) {
                 Toast.makeText(c, "Decryption Error", Toast.LENGTH_SHORT).show();
                 throw new RuntimeException(e);
